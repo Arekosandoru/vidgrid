@@ -241,16 +241,13 @@ def make_sheets(
     try:
         if font is not None and font_size:
             shutil.copyfile(font, work / "font.ttf")
-        (work / "filter.txt").write_text(
-            build_filter(
-                interval,
-                width,
-                cols,
-                rows,
-                font_size,
-                limit=duration if end is not None else None,
-            ),
-            encoding="utf-8",
+        graph = build_filter(
+            interval,
+            width,
+            cols,
+            rows,
+            font_size,
+            limit=duration if end is not None else None,
         )
         pattern = out_dir / "sheet_%02d.jpg"
         cmd = [
@@ -264,15 +261,16 @@ def make_sheets(
             f"{start:.3f}",
             "-i",
             str(video),
-            "-filter_script:v",
-            "filter.txt",
+            "-vf",
+            graph,
             "-q:v",
             str(quality),
             "-an",
             "-sn",
             str(pattern),
         ]
-        # cwd=work keeps every path inside the filtergraph free of separators.
+        # cwd=work: the graph names the font by bare filename, so no path and no
+        # escaped colon ever reaches the filter parser.
         result = _run(cmd, cwd=work)
     finally:
         shutil.rmtree(work, ignore_errors=True)

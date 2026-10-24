@@ -4,8 +4,8 @@
 
 First release.
 
-- Contact sheets: `fps` → `showinfo` → `scale` → `drawtext` → `tile` in a single
-  ffmpeg pass, filtergraph passed via `-filter_script:v`.
+- Contact sheets: `trim` → `fps` → `showinfo` → `scale` → `drawtext` → `tile` in
+  a single ffmpeg pass, filtergraph passed inline to `-vf`.
 - Timecodes burned into every tile; tile times taken from ffmpeg's own PTS.
 - `sheets.json` manifest mapping every tile to a second.
 - `--at TIME` for one full-size frame at a timestamp.

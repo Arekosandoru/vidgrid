@@ -109,11 +109,14 @@ The intended loop is always the same:
 
 ## How it works
 
-One ffmpeg pass. The filtergraph is `fps` → `showinfo` → `scale` → `drawtext`
-→ `tile`, written to a temporary `filter.txt` and passed with
-`-filter_script:v`. Keeping the graph in a file sidesteps the quoting rules that
-break `drawtext` on Windows paths and on any argument containing a colon; the
-font is copied next to the script so its path never enters the graph at all.
+One ffmpeg pass. The filtergraph is `trim` → `fps` → `showinfo` → `scale` →
+`drawtext` → `tile`, passed inline to `-vf`.
+
+An inline `drawtext` graph is usually where ffmpeg wrappers break, because the
+text contains a colon (`%{pts:hms}`) and so does every Windows font path. vidgrid
+sidesteps both: the font is copied into a scratch directory as `font.ttf` and
+referenced by bare name, and ffmpeg runs from that directory, so no path and no
+escaped colon ever reaches the filter parser.
 
 Tile times are read back from ffmpeg's own `showinfo` timestamps rather than
 computed with arithmetic, so the manifest matches what is actually on screen.
