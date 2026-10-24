@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vidgrid"
+version = "0.1.0"
+description = "Turn a video into timestamped contact sheets an AI agent can read."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Arekosandoru" }]
+keywords = ["video", "contact-sheet", "ffmpeg", "ai-agents", "claude-code", "codex"]
+classifiers = [
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Video",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arekosandoru/vidgrid"
+
+[project.scripts]
+vidgrid = "vidgrid:main"
+
+[tool.setuptools]
+py-modules = ["vidgrid"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
