@@ -171,6 +171,18 @@ def find_font(explicit: str | None) -> Path | None:
     return None
 
 
+_DRAWTEXT: bool | None = None
+
+
+def supports_drawtext() -> bool:
+    """ffmpeg can be built without libfreetype, so drawtext is not guaranteed."""
+    global _DRAWTEXT
+    if _DRAWTEXT is None:
+        result = _run(["ffmpeg", "-hide_banner", "-filters"])
+        _DRAWTEXT = result.returncode == 0 and "drawtext" in result.stdout
+    return _DRAWTEXT
+
+
 def build_filter(
     interval: float,
     tile_width: int,
@@ -228,8 +240,23 @@ def make_sheets(
 
     width = min(tile_width, info["width"] or tile_width)
     font_size = None
-    if timestamps and font is not None:
-        font_size = max(11, width // 26)
+    if timestamps:
+        if font is None:
+            if not quiet:
+                print(
+                    "vidgrid: no system font found, tiles get no timecodes"
+                    " (pass --font, or --no-timestamps to silence this)",
+                    file=sys.stderr,
+                )
+        elif not supports_drawtext():
+            if not quiet:
+                print(
+                    "vidgrid: this ffmpeg build has no drawtext filter,"
+                    " tiles get no timecodes (times stay in sheets.json)",
+                    file=sys.stderr,
+                )
+        else:
+            font_size = max(11, width // 26)
 
     out_dir.mkdir(parents=True, exist_ok=True)
 

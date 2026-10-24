@@ -127,8 +127,10 @@ computed with arithmetic, so the manifest matches what is actually on screen.
   most agent-facing footage is a screen or gameplay recording with no cuts.
 - A clip with fewer frames than the grid leaves black cells in the last sheet;
   the summary marks it `(partial)`.
-- Timestamps rely on a system font. If none is found, pass `--font` or use
-  `--no-timestamps`; nothing else breaks.
+- Timestamps rely on a system font and on the `drawtext` filter, which not every
+  ffmpeg build ships (Homebrew's does not). If either is missing you still get
+  the sheets and the manifest, just without burned-in labels — vidgrid says so
+  instead of failing. Pass `--font`, or `--no-timestamps` to skip the warning.
 - Not a video *understanding* tool. It prepares evidence; the model does the
   reading. For transcripts or OCR, pair it with a dedicated tool.
 

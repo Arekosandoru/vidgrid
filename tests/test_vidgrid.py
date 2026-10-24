@@ -126,6 +126,15 @@ def test_without_timestamps(clip: Path, tmp_path: Path) -> None:
     assert read_manifest(out)["timestamps"] is False
 
 
+def test_timestamps_when_the_platform_can_draw(clip: Path, tmp_path: Path) -> None:
+    """Homebrew's ffmpeg ships without drawtext, so this only runs where it exists."""
+    if vidgrid.find_font(None) is None or not vidgrid.supports_drawtext():
+        pytest.skip("no font or no drawtext filter on this platform")
+    out = tmp_path / "sheets"
+    assert vidgrid.main([str(clip), "--out", str(out), "--interval", "3", "--quiet"]) == 0
+    assert read_manifest(out)["timestamps"] is True
+
+
 def test_grab_single_frame(clip: Path, tmp_path: Path) -> None:
     out = tmp_path / "frames"
     assert vidgrid.main([str(clip), "--out", str(out), "--at", "0:00:03"]) == 0

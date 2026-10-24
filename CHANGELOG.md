@@ -12,4 +12,6 @@ First release.
 - Range selection with `--start`/`--end`, exact cutting via `trim`.
 - Sampled by `--count` or `--interval`; never upscales past the source.
 - Agent Skill in `skills/vidgrid/SKILL.md`.
+- Degrades gracefully when ffmpeg lacks the `drawtext` filter (Homebrew): sheets
+  still render, timecodes stay in `sheets.json` only.
 - 21 tests, CI on Linux, macOS and Windows.
